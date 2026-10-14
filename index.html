@@ -36,7 +36,7 @@ h3{margin:0 0 6px;font-size:15px;font-family:Georgia,serif}h4{margin:14px 0 4px;
 <nav class="tabs"><button data-p="db" class="on">Ringkasan</button><button data-p="cs">Cari Saham</button><button data-p="sp">Sinyal &amp; Posisi</button><button data-p="rt">Riwayat</button><button data-p="pm">Peta</button><button data-p="eq">Equity</button><button data-p="lb">Lab Strategi</button></nav><div id="stat"></div></header>
 <main>
 <div class="note" id="note"></div>
-<details class="set"><summary>⚙ Pengaturan strategi &amp; sumber data <span class="mu" id="cnt"></span></summary><div class="bar">SMA <input id="ps" type="number" value="200"> EMA cepat <input id="pf" type="number" value="9"> EMA lambat <input id="pl" type="number" value="21"> Biaya % <input id="fee" type="number" step=".05" value="0.4"> Mulai <select id="yr"><option>2000</option><option>2005</option><option>2010</option><option>2015</option><option>2020</option></select>
+<details class="set"><summary>⚙ Pengaturan strategi &amp; sumber data <span class="mu" id="cnt"></span></summary><div class="bar">SMA <input id="ps" type="number" value="100"> EMA cepat <input id="pf" type="number" value="20"> EMA lambat <input id="pl" type="number" value="50"> Biaya % <input id="fee" type="number" step=".05" value="0.4"> Maks posisi <input id="pk" type="number" value="10"> Exit <select id="px" class="w"><option value="1" selected>Close&lt;SMA saja</option><option value="0">EMA cross-down / Close&lt;SMA</option></select> Trailing % <input id="pt" type="number" value="0"> <label><input type="checkbox" id="pg" checked style="width:auto"> Saring data aneh</label> Mulai <select id="yr"><option>2000</option><option>2005</option><option>2010</option><option>2015</option><option>2020</option></select>
 <button class="btn" id="run">Hitung ulang</button><button class="btn" id="go">Perbarui data sekarang</button><label>CSV <input class="w" id="csv" type="file" accept=".csv" multiple style="max-width:170px"></label></div>
 <div class="bar" style="font-size:12px"><span id="status"></span></div></details>
 <section class="pg on" id="p-db">
@@ -45,11 +45,11 @@ h3{margin:0 0 6px;font-size:15px;font-family:Georgia,serif}h4{margin:14px 0 4px;
 <h3 class="sec">Statistik strategi (semua trade tertutup)</h3><div class="stats" id="k4"></div><div class="ribbon" id="k2"></div>
 <div class="cols"><div class="card"><div class="bar" style="margin:0 0 8px"><div><h3>Kandidat sinyal Buy</h3><span class="mu" style="font-size:12px">Harga pemicu = estimasi close besok agar EMA cepat menembus EMA lambat &amp; Close &gt; SMA (fraksi BEI). Bukan nasihat investasi.</span></div><span class="sp"><button class="chip on" data-w="0">Semua</button> <button class="chip" data-w="1">Sangat dekat</button></span></div><div class="wrap"><table id="tw"></table></div></div>
 <div class="card"><h3>Sinyal 7 bar terakhir</h3><div id="sgl"></div></div></div></section>
-<section class="pg" id="p-cs"><div class="card bar"><input class="w" id="sq" list="dl" placeholder="Ketik kode saham, mis. BBCA" style="width:260px"><datalist id="dl"></datalist><span id="sh"></span></div><div class="stats" id="sk"></div><div class="card"><svg class="ch" id="c3" viewBox="0 0 800 220"></svg></div><div class="card wrap"><table id="st"></table></div></section>
+<section class="pg" id="p-cs"><div class="card bar"><input class="w" id="sq" list="dl" placeholder="Ketik kode saham, mis. BBCA" style="width:260px"><datalist id="dl"></datalist><span id="sh"></span></div><p class="mu" style="font-size:12px;margin:0 0 8px">Statistik per saham = trade tiap saham secara mandiri (tanpa batas posisi). Hasil portofolio ada di Ringkasan dan Riwayat.</p><div class="stats" id="sk"></div><div class="card"><svg class="ch" id="c3" viewBox="0 0 800 220"></svg></div><div class="card wrap"><table id="st"></table></div></section>
 <section class="pg" id="p-sp"><div class="card"><h3>⚡ Sinyal 7 bar terakhir</h3><div class="wrap"><table id="tsg"></table></div></div><div class="card"><h3>💼 Posisi aktif</h3><div class="wrap"><table id="tps"></table></div></div></section>
 <section class="pg" id="p-rt"><div class="card"><div class="bar"><h3>Riwayat trade tertutup</h3><input class="w" id="rq" placeholder="Filter kode…"><span id="rc"></span></div><div class="wrap" style="max-height:620px"><table id="tr"></table></div></div></section>
 <section class="pg" id="p-pm"><div class="card"><h3>Peta Performa — % net profit per saham (klik untuk detail)</h3><div class="map" id="map"></div></div></section>
-<section class="pg" id="p-eq"><div class="card"><h3>Equity curve (modal Rp100 jt, tiap trade = 1/N modal)</h3><svg class="ch" id="c1" viewBox="0 0 800 260"></svg></div><div class="card"><h3>Drawdown (%)</h3><svg class="ch" id="c2" viewBox="0 0 800 150"></svg></div></section>
+<section class="pg" id="p-eq"><div class="card"><h3>Equity curve portofolio (modal Rp100 jt, dibagi rata ke maks posisi, keuntungan diputar ulang)</h3><svg class="ch" id="c1" viewBox="0 0 800 260"></svg></div><div class="card"><h3>Drawdown (%)</h3><svg class="ch" id="c2" viewBox="0 0 800 150"></svg></div></section>
 <section class="pg" id="p-lb"><div class="card"><h3>Lab Strategi — uji variasi aturan di data asli Anda</h3><p class="mu" style="margin:4px 0 10px;font-size:13px">Menjalankan ±60 skenario: kombinasi SMA/EMA, aturan exit, batas jumlah posisi (modal dibagi rata &amp; diputar ulang / compounding), dan trailing stop 25%. Posisi dipilih berdasarkan momentum 6 bulan. Hasil dibagi dua periode (s/d 2012 dan 2013+) dan diurutkan dari yang <b>paling konsisten</b> di kedua periode, supaya tidak sekadar cocok dengan masa lalu. Pilih baris untuk melihat equity-nya.</p><div class="bar" style="margin:0"><button class="btn" id="lbgo">▶ Jalankan uji strategi</button><label><input type="checkbox" id="lbf" checked style="width:auto"> Saring data aneh (gerak harian &gt;40%)</label><span id="lbst" class="mu"></span></div><div id="lbw" class="mu" style="margin-top:8px;font-size:12px"></div></div>
 <div class="card"><div class="wrap" style="max-height:520px"><table id="lbt"></table></div></div><div class="card"><h3 id="lbh">Equity</h3><svg class="ch" id="c4" viewBox="0 0 800 240"></svg><p class="mu" style="font-size:12px">Catatan: daftar saham adalah anggota sekarang (survivorship bias) sehingga hasil cenderung terlalu bagus; biaya dihitung per trade sesuai kolom Biaya; eksekusi di close; bukan nasihat investasi.</p></div></section>
 </main>
@@ -61,9 +61,9 @@ const E0=1e8,tk=x=>x<200?1:x<500?2:x<2000?5:x<5000?10:25,st=t=>{$('status').text
 let RAW={},DEMO=true,A=null,wf=0;
 function ema(c,n){const a=2/(n+1),o=[c[0]];for(let i=1;i<c.length;i++)o.push(a*c[i]+(1-a)*o[i-1]);return o}
 function sma(c,n){const o=new Array(c.length).fill(NaN);let s=0;for(let i=0;i<c.length;i++){s+=c[i];if(i>=n)s-=c[i-n];if(i>=n-1)o[i]=s/n}return o}
-function bt(d,c,fee,pr){const n=c.length,S=sma(c,pr.s),F=ema(c,pr.f),L=ema(c,pr.l),T=[],ev=[];let ent=-1;
-for(let i=1;i<n;i++){const buy=c[i]>S[i]&&F[i]>L[i]&&F[i-1]<=L[i-1],sell=(F[i]<L[i]&&F[i-1]>=L[i-1])||c[i]<S[i];
-if(ent<0&&buy){ent=i;if(i>=n-7)ev.push([d[i],'BUY',c[i]])}else if(ent>=0&&sell){T.push([d[ent],d[i],c[ent],c[i],(c[i]/c[ent]-1-fee)*100,i-ent]);ent=-1;if(i>=n-7)ev.push([d[i],'SELL',c[i]])}}
+function bt(d,c,fee,pr){const n=c.length,S=sma(c,pr.s),F=ema(c,pr.f),L=ema(c,pr.l),T=[],ev=[];let ent=-1,pk=0;
+for(let i=1;i<n;i++){if(ent>=0&&c[i]>pk)pk=c[i];const buy=c[i]>S[i]&&F[i]>L[i]&&F[i-1]<=L[i-1],sell=(!pr.xm&&F[i]<L[i]&&F[i-1]>=L[i-1])||c[i]<S[i]||(ent>=0&&pr.tr>0&&c[i]<pk*(1-pr.tr));
+if(ent<0&&buy){ent=i;pk=c[i];if(i>=n-7)ev.push([d[i],'BUY',c[i]])}else if(ent>=0&&sell){T.push([d[ent],d[i],c[ent],c[i],(c[i]/c[ent]-1-fee)*100,i-ent]);ent=-1;if(i>=n-7)ev.push([d[i],'SELL',c[i]])}}
 let pos=null,w=null;const x=n-1;
 if(ent>=0)pos=[d[ent],c[ent],c[x],(c[x]/c[ent]-1)*100,x-ent];
 else if(!isNaN(S[x])&&F[x]<L[x]){const a=2/(pr.f+1),b=2/(pr.l+1),v=Math.max(((1-b)*L[x]-(1-a)*F[x])/(a-b),S[x]),t=tk(v),trig=Math.ceil(v/t)*t,dist=(trig/c[x]-1)*100,g=i=>(F[i]/L[i]-1)*100;
@@ -73,16 +73,35 @@ function mt(P,B){const W=P.filter(x=>x>0),Lo=P.filter(x=>x<=0),m=a=>a.length?a.r
 return{avg:m(P),pf:sl>0?sw/sl:null,aw:m(W),al:m(Lo),wr:P.length?W.length/P.length*100:null,awb:m(B.filter((_,i)=>P[i]>0)),alb:m(B.filter((_,i)=>P[i]<=0)),n:P.length}}
 const ddMax=v=>{let p=0,m=0;for(const x of v){p=Math.max(p,x);m=Math.min(m,x/p-1)}return m*100};
 const yrs=(a,b)=>(new Date(b)-new Date(a))/31557600000;
-function analyze(){const pr={s:+$('ps').value,f:+$('pf').value,l:+$('pl').value},fee=+$('fee').value/100,y0=$('yr').value+'-01-01',S=[],ALL=[],ev=[],last=[];
-for(const t in RAW){const{d,c}=RAW[t];if(c.length<pr.s+60)continue;const r=bt(d,c,fee,pr),T=r.T.filter(x=>x[0]>=y0);last.push(r.last);
+function analyze(){const pr={s:+$('ps').value,f:+$('pf').value,l:+$('pl').value,K:+$('pk').value||0,xm:+$('px').value,tr:(+$('pt').value||0)/100,flt:$('pg').checked},fee=+$('fee').value/100,y0=$('yr').value+'-01-01',S=[],ALL=[],ev=[],last=[],bad=pr.flt?badSet():new Set();
+for(const t in RAW){const{d,c}=RAW[t];if(c.length<pr.s+60||bad.has(t))continue;const r=bt(d,c,fee,pr),T=r.T.filter(x=>x[0]>=y0);last.push(r.last);
 const P=T.map(x=>x[4]),B=T.map(x=>x[5]),m=mt(P,B);m.np=(P.reduce((a,p)=>a*(1+p/100),1)-1)*100;
 let e=1;const eq=T.map(x=>[x[1],e*=1+x[4]/100]);if(eq.length)eq.unshift([T[0][0],1]);
 S.push({t,m,pos:r.pos,w:r.w,T,eq,ev:r.ev});T.forEach(x=>ALL.push([t,...x]));r.ev.forEach(x=>ev.push([t,...x]))}
 if(!S.length){st('Tidak ada data yang cukup.');return}
-const N=S.length,C=ALL.slice().sort((a,b)=>a[2]<b[2]?-1:1);let cum=0;const pts=C.map(x=>[x[2],E0*(1+(cum+=x[5]/N)/100)]);if(C.length)pts.unshift([C[0][1],E0]);
-const vals=pts.map(p=>p[1]),fin=vals[vals.length-1],pk=Math.max(...vals),mm=mt(C.map(x=>x[5]),C.map(x=>x[6])),yy=pts.length>1?yrs(pts[0][0],pts[pts.length-1][0]):0,
-cagr=yy>0&&fin>0?(Math.pow(fin/E0,1/yy)-1)*100:null,dd=ddMax(vals);
-A={S,ALL:C,ev,pts,N,m:{...mm,np:(fin/E0-1)*100,cagr,dd},fin,pk,yy,last:last.sort().pop(),open:S.filter(s=>s.pos).length,watch:S.filter(s=>s.w),nodata:TK.length-S.length};renderAll()}
+const N=S.length,PF=runPortfolio(pr,S.map(s=>s.t),fee,y0);
+if(!PF){st('Belum ada trade pada pengaturan ini.');return}
+S.forEach(s=>{s.pos=PF.pos[s.t]||null;if(s.pos)s.w=null});
+const C=PF.trades,mm=mt(C.map(x=>x[5]),C.map(x=>x[6])),fin=PF.fin*E0,pk=PF.pk*E0,yy=PF.yy,cagr=yy>0&&fin>0?(Math.pow(fin/E0,1/yy)-1)*100:null;
+A={S,ALL:C,ev:PF.ev,pts:PF.pts,N,K:PF.K,nbad:bad.size,m:{...mm,np:(fin/E0-1)*100,cagr,dd:PF.dd},fin,pk,yy,last:last.sort().pop(),open:S.filter(s=>s.pos).length,watch:S.filter(s=>s.w),nodata:TK.length-S.length};renderAll()}
+function badSet(){const b=new Set();for(const t in RAW){const c=RAW[t].c;for(let i=1;i<c.length;i++)if(Math.abs(c[i]/c[i-1]-1)>.4){b.add(t);break}}return b}
+function runPortfolio(pr,tick,fee,y0){
+const nm=tick.filter(t=>RAW[t]&&RAW[t].c.length>300),N=nm.length;if(!N)return null;
+const ds=new Set();nm.forEach(t=>RAW[t].d.forEach(x=>ds.add(x)));const D=[...ds].sort(),G=D.length,gi=new Map(D.map((x,i)=>[x,i])),P=[],E=[],X=[],M=[];
+nm.forEach(t=>{const{d,c}=RAW[t],n=c.length,S=sma(c,pr.s),F=ema(c,pr.f),L=ema(c,pr.l),a=new Float64Array(G).fill(NaN),e=new Uint8Array(G),x=new Uint8Array(G),mo=new Float32Array(G).fill(-1);
+for(let i=0;i<n;i++){const g=gi.get(d[i]);a[g]=c[i];if(i>=126)mo[g]=c[i]/c[i-126]-1;if(i>0){const b=c[i]<S[i];if(c[i]>S[i]&&F[i]>L[i]&&F[i-1]<=L[i-1])e[g]=1;if(b||(!pr.xm&&F[i]<L[i]&&F[i-1]>=L[i-1]))x[g]=1}}P.push(a);E.push(e);X.push(x);M.push(mo)});
+const gs=Math.max(1,D.findIndex(x=>x>=y0)),K=Math.max(1,Math.min(pr.K||N,N));let cash=1,g0=-1;const h=new Map(),ev=new Float64Array(G).fill(1),T=[];
+for(let g=gs;g<G;g++){
+for(const[j,o]of h){const p=P[j][g];if(p!==p)continue;o.l=p;if(p>o.pk)o.pk=p;if(X[j][g]||(pr.tr>0&&p<o.pk*(1-pr.tr))){cash+=o.sh*p*(1-fee);T.push([nm[j],D[o.g],D[g],o.e,p,(p/o.e*(1-fee)-1)*100,g-o.g]);h.delete(j)}}
+if(h.size<K){const cd=[];for(let j=0;j<N;j++)if(E[j][g]&&!h.has(j))cd.push(j);if(cd.length){cd.sort((a,b)=>M[b][g]-M[a][g]);let q=cash;for(const o of h.values())q+=o.sh*o.l;
+for(const j of cd){if(h.size>=K||cash<=1e-9)break;const v=Math.min(cash,q/K),p=P[j][g];h.set(j,{sh:v/p,e:p,pk:p,l:p,g});cash-=v;if(g0<0)g0=g}}}
+let q=cash;for(const o of h.values())q+=o.sh*o.l;ev[g]=q}
+if(g0<0)return null;const q0=Math.max(0,g0-1),step=Math.max(1,Math.floor((G-q0)/300)),pts=[];let pkv=1,dmax=0;
+for(let g=q0;g<G;g++){if(ev[g]>pkv)pkv=ev[g];dmax=Math.min(dmax,ev[g]/pkv-1)}
+for(let g=q0;g<G;g+=step)pts.push([D[g],ev[g]*E0]);pts.push([D[G-1],ev[G-1]*E0]);
+const pos={},evs=[],cut=D[Math.max(0,G-7)];for(const[j,o]of h){pos[nm[j]]=[D[o.g],o.e,o.l,(o.l/o.e-1)*100,G-1-o.g];if(D[o.g]>=cut)evs.push([nm[j],D[o.g],'BUY',o.e])}
+T.forEach(x=>{if(x[2]>=cut){evs.push([x[0],x[2],'SELL',x[4]]);if(x[1]>=cut)evs.push([x[0],x[1],'BUY',x[3]])}});
+T.sort((a,b)=>a[2]<b[2]?-1:1);return{trades:T,pts,fin:ev[G-1],pk:pkv,dd:dmax*100,yy:yrs(D[q0],D[G-1]),pos,ev:evs,K}}
 const kp=(ic,l,v,s,c='')=>`<div class="kp"><div class="ic">${ic}</div><span>${l}</span><b class="${c}">${v}</b><small>${s||''}</small></div>`;
 const rp=v=>'Rp'+f(v/1e6,1)+' jt',sig=s=>`<span class="tag ${s=='BUY'?'tb':'ts'}">${s}</span>`;
 function chart(id,pts,o){const s=$(id),W=800,H=+s.getAttribute('viewBox').split(' ')[3],L=52,v=pts.map(p=>p[1]);let mn=Math.min(...v),mx=Math.max(...v);if(o.z!=null)mx=Math.max(mx,o.z);if(mx==mn)mx=mn+1;const n=v.length-1||1,X=i=>L+i/n*(W-L-8),Y=x=>8+(1-(x-mn)/(mx-mn))*(H-28);let g='';
@@ -93,7 +112,7 @@ s.innerHTML=`<defs><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop
 function renderAll(){const m=A.m;
 $('note').innerHTML=(DEMO?'<span class="demo">DEMO</span>Harga SINTETIS (random walk), hanya contoh tampilan — bukan hasil nyata. ':'')+'Data Yahoo Finance via server Vercel, diperbarui otomatis tiap 30 menit selama halaman terbuka. Saat bursa buka (09:00–16:00 WIB) bar terakhir = harga berjalan, sinyal final setelah penutupan. Buy: Close &gt; SMA &amp; EMA cepat cross-up EMA lambat · Sell: cross-down atau Close &lt; SMA · long only.';
 $('cnt').textContent='· '+A.N+' simbol dimuat';
-$('stat').innerHTML=`<span class="chp">${DEMO?'Data dummy':'Yahoo Finance'}</span><span class="chp">${A.N}/${TK.length} saham</span><span class="chp">s/d ${A.last}</span><span class="chp">update ${new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</span>`;
+$('stat').innerHTML=`<span class="chp">${DEMO?'Data dummy':'Yahoo Finance'}</span><span class="chp">${A.N}/${TK.length} saham${A.nbad?" · "+A.nbad+" dikeluarkan (data aneh)":""}</span><span class="chp">maks ${A.K} posisi</span><span class="chp">s/d ${A.last}</span><span class="chp">update ${new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}</span>`;
 $('heq').textContent=rp(A.fin);$('heq2').innerHTML=`<b class="${cl(m.np)}">${sg(m.np)}%</b> <span class="mu">cumulative return</span>`;
 $('hmini').innerHTML=[['CAGR',sg(m.cagr)+'%',cl(m.cagr)],['Max DD',f(Math.abs(m.dd))+'%','r'],['CAGR ÷ DD',f(m.dd?Math.abs(m.cagr/m.dd):null),''],['Periode',f(A.yy,1)+' thn','']].map(a=>`<div><small>${a[0]}</small><b class="${a[2]}">${a[1]}</b></div>`).join('');
 chart('c0',A.pts,{c:'var(--ac)',fm:v=>f(v/1e6,0)+'jt'});
