@@ -37,7 +37,7 @@ h3{margin:0 0 6px;font-size:15px;font-family:Georgia,serif}h4{margin:14px 0 4px;
 <main>
 <div class="note" id="note"></div>
 <details class="set"><summary>⚙ Pengaturan strategi &amp; sumber data <span class="mu" id="cnt"></span></summary><div class="bar">SMA <input id="ps" type="number" value="100"> EMA cepat <input id="pf" type="number" value="20"> EMA lambat <input id="pl" type="number" value="50"> Biaya % <input id="fee" type="number" step=".05" value="0.4"> Maks posisi <input id="pk" type="number" value="10"> Exit <select id="px" class="w"><option value="1" selected>Close&lt;SMA saja</option><option value="0">EMA cross-down / Close&lt;SMA</option></select> Trailing % <input id="pt" type="number" value="0"> <label><input type="checkbox" id="pg" checked style="width:auto"> Saring data aneh</label> Mulai <select id="yr"><option>2000</option><option>2005</option><option>2010</option><option>2015</option><option>2020</option></select>
-<button class="btn" id="run">Hitung ulang</button><button class="btn" id="go">Perbarui data sekarang</button><button class="btn" id="dl" style="background:var(--ac2);color:#1c1b22">⬇ Unduh data untuk analisis</button><label>CSV <input class="w" id="csv" type="file" accept=".csv" multiple style="max-width:170px"></label></div>
+<button class="btn" id="run">Hitung ulang</button><button class="btn" id="go">Perbarui data sekarang</button><label>CSV <input class="w" id="csv" type="file" accept=".csv" multiple style="max-width:170px"></label></div>
 <div class="bar" style="font-size:12px"><span id="status"></span></div></details>
 <section class="pg on" id="p-db">
 <div class="hero"><div class="card"><div class="hh"><div><small>EKUITAS · MODAL AWAL Rp100 JT</small><div class="bigno" id="heq"></div><div id="heq2"></div></div><div class="mini" id="hmini"></div></div><svg class="ch" id="c0" viewBox="0 0 800 230"></svg></div>
@@ -185,8 +185,5 @@ st_(`Selesai: ${res.length} skenario. Diurutkan dari yang paling konsisten di du
 const st_=t=>{$('lbst').textContent=t};
 $('lbgo').onclick=()=>{$('lbgo').disabled=true;lab().catch(e=>st_('Error: '+e.message)).finally(()=>$('lbgo').disabled=false)};
 
-$('dl').onclick=async()=>{try{if(!Object.keys(RAW).length){st('Data belum dimuat.');return}const js=JSON.stringify(RAW,(k,v)=>typeof v==='number'?Math.round(v*100)/100:v);let blob,name;
-if(window.CompressionStream){blob=await new Response(new Blob([js]).stream().pipeThrough(new CompressionStream('gzip'))).blob();name='kompas100_data.json.gz'}else{blob=new Blob([js],{type:'application/json'});name='kompas100_data.json'}
-const x=document.createElement('a');x.href=URL.createObjectURL(blob);x.download=name;x.click();st('Terunduh: '+name+' ('+(blob.size/1e6).toFixed(1)+' MB)')}catch(e){st('Gagal: '+e.message)}};
 if(location.search.includes('demo')){demo();analyze()}else{DEMO=false;$('note').textContent='Memuat data Yahoo Finance… (pertama kali bisa 30–60 detik)';$('go').onclick();setInterval(()=>$('go').onclick(),30*60*1000)}
 </script></body></html>
